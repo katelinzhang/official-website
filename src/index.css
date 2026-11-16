@@ -1,0 +1,311 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    /* ═══ 可访问性③：锚点跳转必须避开 sticky header ═══
+       改前：scroll-padding-top 未设（auto）。而 header 是 position:sticky，
+       实测高 65px(375 宽) / 81px(1440 宽) —— 任何锚点跳转（#workflow 等）
+       都会把目标区块顶到 header 下方，正文标题被遮住看不见。
+       scroll-padding-top 让浏览器预留在顶部这段高度，与 header 实测值对应。*/
+    scroll-padding-top: 4.5rem;
+  }
+
+  @media (min-width: 1024px) {
+    html { scroll-padding-top: 5.5rem; }
+  }
+
+  body {
+    @apply font-body text-brand-charcoal bg-brand-cream;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-heading tracking-tight;
+  }
+
+  /* ═══ 可访问性①：键盘焦点必须可见 ═══
+     改前：focus 样式仅 7 处、focus-visible 仅 3 处，键盘用户 Tab
+     导航时几乎看不到焦点落在哪个元素上。浏览器默认 outline 在深色
+     背景上不可见，故统一为品牌橙 + 偏移，任何元素聚焦都看得见。 */
+  :where(a, button, input, textarea, select, summary, [tabindex]):focus-visible {
+    outline: 2px solid #FF9536;
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+
+  /* ═══ 可访问性②：尊重系统「减弱动效」设置 ═══
+     改前：prefers-reduced-motion 支持 0 处。前庭功能障碍 / 晕动症
+     用户开启系统设置后，网站仍强制播放位移动画，这里一刀切降级。 */
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
+
+@layer components {
+  /* ── Buttons ── */
+  .btn-primary {
+    @apply inline-flex items-center gap-2 px-6 py-3 text-white font-semibold rounded-xl
+           bg-gradient-to-b from-[#FFA040] to-brand-orange
+           shadow-[0_4px_14px_rgba(255,149,54,0.25)]
+           hover:-translate-y-0.5 hover:shadow-[0_6px_20px_rgba(255,149,54,0.35)]
+           active:scale-[0.97] active:shadow-[0_2px_8px_rgba(255,149,54,0.2)]
+           transition-all duration-200 ease-out;
+  }
+
+  .btn-outline {
+    @apply inline-flex items-center gap-2 px-6 py-3 border-2 border-brand-support-green/30 text-brand-green font-semibold rounded-xl
+           hover:border-brand-support-green hover:bg-brand-support-green/5
+           active:scale-[0.97]
+           focus-visible:ring-2 focus-visible:ring-brand-support-green/30 focus-visible:ring-offset-2
+           transition-all duration-200 ease-out;
+  }
+
+  .btn-ghost {
+    @apply relative inline-flex items-center gap-1.5 px-4 py-2 text-brand-green font-medium rounded-lg
+           hover:text-brand-orange
+           after:absolute after:bottom-0 after:left-1/2 after:w-0 after:h-[2px]
+           after:bg-brand-orange after:transition-all after:duration-300
+           hover:after:w-full hover:after:left-0
+           transition-colors duration-200;
+  }
+
+  /* ── Layout ── */
+  .section-padding {
+    @apply px-4 sm:px-6 lg:px-8 py-14 md:py-20 lg:py-28;
+  }
+
+  .container-custom {
+    @apply max-w-7xl mx-auto;
+  }
+
+  /* ── Cards ── */
+  /* 阴影分 3 档（elev-1/2/3，定义在 utilities 层）：
+     一屏内混用两种以上阴影层级会显脏。静态卡片几乎平，只给发丝边；
+     hover 才抬起扩散；最重的 elev-3 只给真正遮挡内容的浮层。
+     圆角归拢到 16px（r-lg 档），与内容容器、图片容器对齐。 */
+  .card {
+    @apply bg-white rounded-2xl
+           border border-brand-support-green/[0.08]
+           hover:-translate-y-1
+           transition-all duration-300 ease-out;
+    box-shadow: 0 1px 2px rgba(18, 26, 24, 0.04),
+                0 0 0 1px rgba(115, 184, 57, 0.05);
+  }
+  .card:hover {
+    box-shadow: 0 8px 28px rgba(18, 26, 24, 0.08),
+                0 0 0 1px rgba(115, 184, 57, 0.09);
+  }
+
+  .card-hover {
+    @apply hover:-translate-y-1;
+  }
+
+  /* ── Badges ── */
+  .badge {
+    @apply px-3 py-1 rounded-full text-xs font-semibold;
+  }
+
+  .badge-green {
+    @apply badge bg-emerald-50 text-emerald-700 border border-emerald-200;
+  }
+
+  .badge-orange {
+    @apply badge bg-orange-50 text-orange-700 border border-orange-200;
+  }
+
+  .badge-amber {
+    @apply badge bg-amber-50 text-amber-700 border border-amber-200;
+  }
+
+  .badge-gray {
+    @apply badge bg-gray-100 text-gray-600;
+  }
+
+  /* ── Section backgrounds ── */
+  .gradient-hero {
+    background-color: #121A18;
+    background-image:
+      url("data:image/svg+xml,%3Csvg width='300' height='300' viewBox='0 0 300 300' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M-20 150 Q 100 30 200 150 T 420 150' fill='none' stroke='rgba(255,255,255,0.045)' stroke-width='1'/%3E%3Cpath d='M-20 80 Q 100 -30 200 80 T 420 80' fill='none' stroke='rgba(255,255,255,0.025)' stroke-width='0.6'/%3E%3Cpath d='M-20 220 Q 100 110 200 220 T 420 220' fill='none' stroke='rgba(255,255,255,0.035)' stroke-width='0.5'/%3E%3Cpath d='M80 -20 Q 180 130 150 230 T 80 420' fill='none' stroke='rgba(115,184,57,0.06)' stroke-width='1'/%3E%3C/svg%3E"),
+      linear-gradient(to bottom, #121A18, #0f2920, #121A18);
+    position: relative;
+  }
+
+  .gradient-hero::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 240px;
+    background:
+      url("data:image/svg+xml,%3Csvg width='64' height='64' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E"),
+      linear-gradient(
+        to bottom,
+        transparent 0%,
+        rgba(255, 248, 234, 0.12) 35%,
+        rgba(255, 248, 234, 0.45) 65%,
+        rgba(255, 248, 234, 0.85) 90%,
+        #FFF8EA 100%
+      );
+    pointer-events: none;
+  }
+
+  .gradient-cta {
+    background-color: #121A18;
+    background-image:
+      url("data:image/svg+xml,%3Csvg width='300' height='300' viewBox='0 0 300 300' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M-20 150 Q 100 30 200 150 T 420 150' fill='none' stroke='rgba(255,255,255,0.04)' stroke-width='1'/%3E%3Cpath d='M-20 80 Q 100 -30 200 80 T 420 80' fill='none' stroke='rgba(255,255,255,0.02)' stroke-width='0.6'/%3E%3Cpath d='M-20 220 Q 100 110 200 220 T 420 220' fill='none' stroke='rgba(255,255,255,0.03)' stroke-width='0.5'/%3E%3Cpath d='M80 -20 Q 180 130 150 230 T 80 420' fill='none' stroke='rgba(115,184,57,0.05)' stroke-width='1'/%3E%3C/svg%3E"),
+      linear-gradient(to right, #121A18, #1a3a2a);
+  }
+
+  .section-cream {
+    background: linear-gradient(to bottom, #FFF8EA 0%, #FFFDF6 40%, #FFFDF6 60%, #FFF8EA 100%);
+  }
+
+  .section-green-tint {
+    background: linear-gradient(to bottom, #FFF8EA 0%, #E8F2DD 35%, #DCEACD 50%, #E8F2DD 65%, #FFF8EA 100%);
+  }
+
+  .section-orange-tint {
+    background: linear-gradient(to bottom, #FFF8EA 0%, #FFF4E0 35%, #FEEACE 50%, #FFF4E0 65%, #FFF8EA 100%);
+  }
+
+  /* ── Glass input ── */
+  .input-glass {
+    @apply w-full px-5 py-3.5 bg-white rounded-xl
+           border border-brand-support-green/[0.12]
+           hover:border-brand-support-green/25
+           focus:border-brand-orange
+           focus:shadow-[0_0_0_3px_rgba(255,149,54,0.12)]
+           outline-none transition-all duration-200 ease-out text-sm placeholder:text-gray-400;
+  }
+
+  /* ── Spec table row ── */
+  .spec-row {
+    @apply flex justify-between items-center py-2.5 px-4 rounded-xl even:bg-brand-support-green/5;
+  }
+
+  /* ── Section heading ── */
+  /* 纯提示，不参与「强调」竞争：橙色专供 CTA，所以这里用中性深绿淡底。
+     在奶油底 / 绿底 / 橙底 section 上都干净。 */
+  .section-tag {
+    @apply inline-flex items-center gap-2 px-3 py-1 bg-brand-green/[0.06] rounded-full
+           text-brand-green/60 text-xs font-semibold;
+  }
+
+  .section-tag::before {
+    content: '';
+    @apply w-1.5 h-1.5 bg-brand-green/40 rounded-full;
+  }
+
+  /* 次级文字链接 —— 深绿常驻，hover 才升橙。
+     与 btn-primary（实心橙）分工明确：一页里橙色焦点只有一个。 */
+  .link-subtle {
+    @apply inline-flex items-center gap-1 text-brand-green font-semibold
+           hover:text-brand-orange transition-colors duration-200;
+  }
+
+  /* ═══ 区块标题三件套 ═══
+     eyebrow → title → desc 固定三段式，缺一不可。
+     字重封顶 font-bold、字号封顶 text-4xl —— 遵守项目
+     「B2B 高端视觉风格纪律」，禁用 extrabold / text-5xl+ 营销感样式。
+
+     【对比度修正】原为 text-brand-green/45，在奶油底（#FFFDF6）上实测
+     仅 2.94:1，而 text-xs 属小字，WCAG 要求 4.5:1 —— 不合格。
+     提到 /75 后：奶油底 6.6:1，浅绿底（#DCEACD）6.9:1，均达标。
+     §1.3 那次灰阶审计只 grep 了 text-gray-300|400，brand-green/45
+     不在扫描范围，所以漏掉了它 —— 透明度才是这里真正的盲区。
+
+     【字距】tracking-widest(0.1em) 配 31 字符的「IN-HOUSE APPLICATION
+     R&D CENTER」会拉得过散且显攻击性，改 tracking-wider(0.05em)。 */
+  .section-eyebrow {
+    @apply inline-flex items-center gap-2 text-xs uppercase tracking-wider
+           text-brand-green/75 font-semibold;
+  }
+  .section-title {
+    @apply font-heading font-bold text-3xl md:text-4xl text-brand-green
+           leading-[1.15] tracking-tight text-balance;
+  }
+  .section-desc {
+    @apply text-base text-gray-500 leading-relaxed max-w-2xl;
+  }
+  /* 深色底上的同套三件色 */
+  .section-eyebrow--on-dark { @apply text-white/55; }
+  .section-title--on-dark   { @apply text-white; }
+  .section-desc--on-dark    { @apply text-white/70; }
+
+  /* ═══ 容器宽度归一（全站只用 3 档）═══
+     改前用了 13 种 max-w（2xl/3xl/4xl/5xl/7xl/md/lg/sm/xs/…）。 */
+  .container-text { max-width: 48rem; }  /*  768px  文字段落 / 表单 */
+  .container-grid { max-width: 72rem; }  /* 1152px  卡片网格（主力） */
+  .container-wide { max-width: 80rem; }  /* 1280px  通栏内容 */
+
+  /* ── Section divider ── */
+  .section-divider {
+    @apply h-px mx-auto my-0 max-w-5xl;
+    background: linear-gradient(
+      to right,
+      transparent,
+      rgba(115, 184, 57, 0.3) 20%,
+      rgba(255, 149, 54, 0.3) 50%,
+      rgba(115, 184, 57, 0.3) 80%,
+      transparent
+    );
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   视觉体系 · Radius / Elevation / Motion（工具层）
+   ───────────────────────────────────────────────────────────────
+   Radius —— 改前 6 种圆角混用（full47 / xl39 / 2xl24 / 3xl8 / lg18 / sm1），
+   卡片边界参差不齐。归为 4 档：
+     r-sm   8px  chip / 小图标底
+     r-md  12px  按钮 / 输入框 / 内层卡片
+     r-lg  16px  主卡片
+     r-xl  24px  图片容器 / 大浮层
+   rounded-full 仅限头像、圆形图标底、pill 标签（保留）。
+
+   Elevation —— 改前 shadow-lg 20 + shadow-xl 11 + shadow-2xl 3 共 34 处
+   重阴影散落各处、无规律。一屏内混用两种以上层级就会显脏：
+     elev-1  静态卡片（几乎平，只给发丝边）
+     elev-2  悬停 / 可点（抬起并扩散）
+     elev-3  浮层（下拉 / 弹窗，最重，只在真正遮挡时用）
+
+   Motion —— 改前 duration 有 200 / 300 / 500 / 700 四种，无规律，
+   700ms 尤其拖沓。归为 3 档语义命名：
+     dur-instant  120ms  颜色 / 透明度微反馈
+     dur-base     240ms  位移 / 阴影 / 边框（主力）
+     dur-slow     400ms  大区块进场、模态
+   ═══════════════════════════════════════════════════════════════ */
+@layer utilities {
+  .r-sm { border-radius: 0.5rem; }
+  .r-md { border-radius: 0.75rem; }
+  .r-lg { border-radius: 1rem; }
+  .r-xl { border-radius: 1.5rem; }
+
+  .dur-instant { transition-duration: 120ms; }
+  .dur-base    { transition-duration: 240ms; }
+  .dur-slow    { transition-duration: 400ms; }
+
+  .elev-1 {
+    box-shadow: 0 1px 2px rgba(18, 26, 24, 0.04),
+                0 0 0 1px rgba(115, 184, 57, 0.05);
+  }
+  .elev-2 {
+    box-shadow: 0 8px 28px rgba(18, 26, 24, 0.08),
+                0 0 0 1px rgba(115, 184, 57, 0.09);
+  }
+  .elev-3 {
+    box-shadow: 0 20px 60px rgba(18, 26, 24, 0.14),
+                0 0 0 1px rgba(18, 26, 24, 0.04);
+  }
+}

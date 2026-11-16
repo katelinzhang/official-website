@@ -1,0 +1,13 @@
+node_modules/
+dist/
+.env
+.env.*.local
+.env.production.example.bak
+.vercel-tmp/
+.DS_Store
+*.tsbuildinfo
+server/data/
+server/uploads/*
+!server/uploads/.gitkeep
+scripts/fix-express.sh
+*.pptx

@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+    <!-- Favicons & app icons -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/png" href="/favicon.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/images/logo.png" />
+    <meta name="theme-color" content="#0f2920" />
+    <meta name="color-scheme" content="light" />
+    <meta name="msapplication-TileColor" content="#0f2920" />
+
+    <!-- Mobile / iOS / format-detection -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="format-detection" content="telephone=no, email=no, address=no" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-title" content="Quark Dairy" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="referrer" content="strict-origin-when-cross-origin" />
+
+    <!-- ===================================================================
+         SEO: STATIC meta tags (read by crawlers that do NOT execute JS)
+         -------------------------------------------------------------------
+         Why: Baiduspider / 360 / Sogou / some social unfurlers fetch the raw
+         HTML and never run JS. react-helmet-async only injects meta AFTER
+         hydration, so without these the crawler sees an empty head and
+         cannot index the page at all.
+         data-rh="true": marks these tags as Helmet-manageable. react-helmet-async's
+         updateTags() only scans head.querySelectorAll(`${type}[data-rh]`), so WITHOUT
+         this attribute the static tag is invisible to Helmet and the live DOM ends up
+         with TWO copies of every description/canonical/og tag (the static one first,
+         then Helmet's). With it, Helmet reuses the static tag when the copy is
+         identical and replaces it when the page needs a different value.
+         Do NOT put data-rh on the JSON-LD script tag, charset,
+         viewport, icons or preconnect: Helmet never emits those, and any data-rh
+         tag it cannot match gets removed — that would drop the Organization and
+         WebSite schema entirely.
+         =================================================================== -->
+    <title data-rh="true">Quark Dairy | Global B2B Supplier of Dairy Ingredients &amp; Plant Extracts</title>
+    <meta
+      data-rh="true"
+      name="description"
+      content="Quark Dairy is a global B2B supplier of dairy ingredients, plant extracts, beverage syrups, fruit jams and savory ingredients — with custom R&amp;D and OEM solutions for food &amp; beverage brands."
+    />
+    <meta
+      data-rh="true"
+      name="keywords"
+      content="dairy ingredients supplier, plant extracts, beverage syrups, fruit jams, savory ingredients, food ingredients B2B, custom R&amp;D, OEM food manufacturing, Halal ingredients"
+    />
+    <link data-rh="true" rel="canonical" href="https://www.quarkdairy.cn/" />
+    <meta data-rh="true" name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+    <!-- 百度移动适配声明：本站为响应式，同一 URL 同时服务 PC 与移动。
+         与 sitemap 里的 <mobile:mobile type="pc,mobile"/> 配套使用。
+         不加 data-rh：Helmet 不管理这个标签，静态保留即可。 -->
+    <meta name="applicable-device" content="pc,mobile" />
+    <!-- 百度站长平台 HTML 标签验证：验证通过后把官方 meta 放在这一行下面。 -->
+    <meta data-rh="true" name="author" content="Quark Dairy Intelligence Institute" />
+
+    <!-- Open Graph / Twitter — identical copy to Layout.tsx + HomePage.tsx -->
+    <meta data-rh="true" property="og:type" content="website" />
+    <meta data-rh="true" property="og:site_name" content="Quark Dairy" />
+    <meta data-rh="true" property="og:title" content="Quark Dairy | Global Food Ingredients &amp; R&amp;D Solutions" />
+    <meta
+      data-rh="true"
+      property="og:description"
+      content="Global B2B supplier of dairy ingredients, plant extracts, syrups, jams and savory ingredients. Custom R&amp;D and OEM solutions for F&amp;B brands."
+    />
+    <meta data-rh="true" property="og:url" content="https://www.quarkdairy.cn/" />
+    <meta data-rh="true" property="og:locale" content="en_US" />
+    <meta data-rh="true" property="og:locale:alternate" content="zh_CN" />
+    <meta data-rh="true" property="og:image" content="https://www.quarkdairy.cn/images/homepage-hero.webp" />
+    <meta data-rh="true" property="og:image:width" content="1200" />
+    <meta data-rh="true" property="og:image:height" content="630" />
+    <meta data-rh="true" name="twitter:card" content="summary_large_image" />
+    <meta data-rh="true" name="twitter:title" content="Quark Dairy | Global Food Ingredients" />
+    <meta
+      data-rh="true"
+      name="twitter:description"
+      content="Premium dairy, plant extracts, syrups, jams &amp; savory ingredients with custom R&amp;D and OEM solutions."
+    />
+    <meta data-rh="true" name="twitter:image" content="https://www.quarkdairy.cn/images/homepage-hero.webp" />
+
+    <!-- JSON-LD: Organization + WebSite (static copy for non-JS crawlers).
+         HomePage.tsx injects only FAQPage at runtime, so these two nodes are
+         never duplicated in the live DOM. Keep @id values identical.
+
+         ⚠️ Two constraints, both easy to break:
+         1. This is strict JSON — NO comments allowed inside the script body.
+            A /* */ here invalidates the whole @graph (Organization + WebSite
+            both disappear).
+         2. No data-rh on this script: Helmet does not emit ld+json, so a
+            data-rh tag that cannot be matched would be removed at mount.
+
+         TODO(需企业提供): sameAs is intentionally omitted. It must list the
+         company's pages on OTHER sites (微信公众号主页 / LinkedIn / 企查查 /
+         行业协会会员页). Pointing it at our own /about is not a valid sameAs
+         and gives crawlers no entity signal. -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "Organization",
+            "@id": "https://www.quarkdairy.cn/#organization",
+            "name": "Quark Dairy",
+            "legalName": "跨客食品科技（上海）有限公司",
+            "alternateName": ["跨客食品", "跨客食品科技", "跨客乳业", "Quark Dairy Intelligence Institute"],
+            "url": "https://www.quarkdairy.cn/",
+            "description": "Global B2B supplier of dairy ingredients, plant extracts, beverage syrups, fruit jams and savory ingredients for food and beverage brands.",
+            "logo": {
+              "@type": "ImageObject",
+              "url": "https://www.quarkdairy.cn/images/logo.png",
+              "width": 600,
+              "height": 60
+            },
+            "image": "https://www.quarkdairy.cn/images/homepage-hero.webp",
+            "address": {
+              "@type": "PostalAddress",
+              "addressCountry": "CN",
+              "addressRegion": "Shanghai",
+              "addressLocality": "Shanghai",
+              "streetAddress": "上海市浦东新区张江高科技园区丹桂路199号"
+            },
+            "email": "info@quarkdairy.cn",
+            "telephone": "+86-21-5895-8888",
+            "contactPoint": [
+              {
+                "@type": "ContactPoint",
+                "contactType": "Sales",
+                "email": "info@quarkdairy.cn",
+                "telephone": "+86-21-5895-8888",
+                "availableLanguage": ["English", "Chinese"],
+                "areaServed": "Worldwide"
+              }
+            ]
+          },
+          {
+            "@type": "WebSite",
+            "@id": "https://www.quarkdairy.cn/#website",
+            "url": "https://www.quarkdairy.cn/",
+            "name": "Quark Dairy Official Site",
+            "inLanguage": "en",
+            "publisher": { "@id": "https://www.quarkdairy.cn/#organization" },
+            "potentialAction": {
+              "@type": "SearchAction",
+              "target": {
+                "@type": "EntryPoint",
+                "urlTemplate": "https://www.quarkdairy.cn/products?search={search_term_string}"
+              },
+              "query-input": "required name=search_term_string"
+            }
+          }
+        ]
+      }
+    </script>
+
+    <!-- Search engine verification placeholders -->
+    <!-- Google Search Console (https://search.google.com/search-console) -->
+    <!-- <meta name="google-site-verification" content="REPLACE_WITH_GSC_CODE" /> -->
+    <!-- Bing Webmaster Tools (https://www.bing.com/webmasters) -->
+    <!-- <meta name="msvalidate.01" content="REPLACE_WITH_BING_CODE" /> -->
+    <!-- Baidu 站长平台 (https://ziyuan.baidu.com) -->
+    <!-- <meta name="baidu-site-verification" content="REPLACE_WITH_BAIDU_CODE" /> -->
+
+    <!-- Performance: preconnect to critical third-party origins -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="dns-prefetch" href="https://www.google.com" />
+    <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
+
+    <!-- Fonts (with display=swap to avoid invisible text during load) -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Manrope:wght@400;500;600;700;800&family=Noto+Sans+SC:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body class="antialiased">
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
